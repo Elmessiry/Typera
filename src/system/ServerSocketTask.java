@@ -6,17 +6,17 @@ import java.util.ArrayList;
 import java.util.*;
 import java.lang.*;
 
-
 public class ServerSocketTask implements Runnable {
 
-    private Socket connection;  // Create Socket
+    private Socket connection; // Create Socket
     private ArrayList<User> usersList;
     public List<ScoreObject> scoreList;
     public int bestScore;
     public ArrayList<Boolean> stat;
     ArrayList<ArrayList<User>> teamList;
 
-    public ServerSocketTask(int server, Socket s, ArrayList<User> usersList, ArrayList<ArrayList<User>> teamList, List<ScoreObject> scoreList, int bestScore, ArrayList<Boolean> stat) {
+    public ServerSocketTask(int server, Socket s, ArrayList<User> usersList, ArrayList<ArrayList<User>> teamList,
+            List<ScoreObject> scoreList, int bestScore, ArrayList<Boolean> stat) {
         this.connection = s;
         this.usersList = usersList;
         this.teamList = teamList;
@@ -25,15 +25,12 @@ public class ServerSocketTask implements Runnable {
         this.stat = stat;
     }
 
-
     @Override
     public void run() {
         Random rand = new Random();
         int z = rand.nextInt(2);
 
-
         try {
-
 
             System.out.println("connected");
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -43,7 +40,6 @@ public class ServerSocketTask implements Runnable {
             while (true) {
 
                 User receivedUser = (User) ois.readObject();
-
 
                 String request = br.readLine();
 
@@ -132,8 +128,7 @@ public class ServerSocketTask implements Runnable {
                 if (request.equals("start cd")) {
                     receivedUser.setReady(true);
 
-                    for (ArrayList<User> team :
-                            teamList) {
+                    for (ArrayList<User> team : teamList) {
                         if (team.get(0).getTeamID() == receivedUser.getTeamID()) {
                             while (true) {
                                 Thread.sleep(200);
@@ -152,16 +147,13 @@ public class ServerSocketTask implements Runnable {
 
                 if (request.equals("start a game")) {
                     int n = 70;
-                    String chall =
-                            RandomString.getAlphaNumericString(n);
+                    String chall = RandomString.getAlphaNumericString(n);
                     String reco = "";
 
-                    for (ArrayList<User> team :
-                            teamList) {
+                    for (ArrayList<User> team : teamList) {
                         if (receivedUser.getTeamID() == team.get(0).getTeamID()) {
                             int t = receivedUser.getTeamID() % 2;
                             team.get(t).setSelected(true);
-
 
                             if (team.get(t).isSelected() == receivedUser.isSelected()) {
                                 receivedUser.setTime(System.currentTimeMillis());
@@ -250,15 +242,11 @@ public class ServerSocketTask implements Runnable {
 
                             bw.flush();
 
-
-                            if ( e == scoreList.get(0).score) {
-
+                            if (e == scoreList.get(0).score) {
 
                                 bw.write("Congratulations, you got a new best time " + e);
                                 bw.write("\n");
                                 bw.flush();
-
-
 
                             } else {
                                 bw.write("Better luck next time, your time is " + e);
@@ -266,12 +254,11 @@ public class ServerSocketTask implements Runnable {
                                 bw.flush();
                             }
 
-
                             System.out.println(scoreList.size());
 
-
                             OutputStream outputStream = connection.getOutputStream();
-                            // create an object output stream from the output stream so we can send an object through it
+                            // create an object output stream from the output stream so we can send an
+                            // object through it
                             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
                             objectOutputStream.writeObject(scoreList);
                             objectOutputStream.flush();
@@ -314,7 +301,6 @@ public class ServerSocketTask implements Runnable {
         }
     }
 
-
     private static boolean verify(User user, ArrayList<User> usersList) {
 
         for (User value : usersList) {
@@ -330,15 +316,13 @@ public class ServerSocketTask implements Runnable {
         usersList.add(user);
     }
 
-
     private static class RandomString {
 
         // function to generate a random string of length n
         static String getAlphaNumericString(int n) {
             // chose a Character random from this String
 
-            String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                    + "abcdefghijklmnopqrstuvxyz";
+            String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "abcdefghijklmnopqrstuvxyz";
 
             // create StringBuffer size of AlphaNumericString
             StringBuilder sb = new StringBuilder(n);
@@ -347,13 +331,10 @@ public class ServerSocketTask implements Runnable {
 
                 // generate a random number between
                 // 0 to AlphaNumericString variable length
-                int index
-                        = (int) (AlphaNumericString.length()
-                        * Math.random());
+                int index = (int) (AlphaNumericString.length() * Math.random());
 
                 // add Character one by one in end of sb
-                sb.append(AlphaNumericString
-                        .charAt(index));
+                sb.append(AlphaNumericString.charAt(index));
             }
             return sb.toString();
         }
